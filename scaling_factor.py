@@ -105,7 +105,7 @@ def compute_covariance_matrix1d(Xs):
 
 
 ds = [2, 5, 10, 20, 50, 100, 200, 500]
-t = 10000
+t = 15000
 coeffs = [0.1, 0.2, 0.3, 0.4]
 root = Path(".")
 
