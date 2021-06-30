@@ -104,8 +104,8 @@ def compute_covariance_matrix1d(Xs):
 
 
 np.random.seed(1)
-d = 10
-t = 20000
+d = 4
+t = 30000
 Xs = sample_ball(d, t)
 coeff = 0.1
 root = Path(".")
