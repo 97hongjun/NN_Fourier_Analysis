@@ -103,39 +103,28 @@ def compute_covariance_matrix1d(Xs):
   return Sigma
 
 
-np.random.seed(1)
-d = 10
-t = 40000
-Xs = sample_ball(d, t)
-coeff = 0.1
+
+ds = [2, 5, 10, 20, 50, 100, 200, 500]
+t = 10000
+coeffs = [0.1, 0.2, 0.3, 0.4]
 root = Path(".")
 
-print('Assembling Kernel Matrix')
-s_time = time.time()
-Sigma = compute_covariance_matrix_massive(Xs.T, 70,  coeff)
-e_time = time.time()
-print('Took %s Seconds to Assemble Matrix'%(e_time - s_time))
-
-print('Computing Eigenvalues')
-s_time2 = time.time()
-eig_vals = np.linalg.eigvalsh(Sigma/float(t))
-e_time2 = time.time()
-filename = 'eig_vals_d%s_t%s_c%s.pkl'%(d, t, coeff)
-
-eigvals_filename = root / "pickle" / filename
-with open(eigvals_filename, 'wb') as handle:
-    pickle.dump(eig_vals, handle)
-print('Took %s Seconds to Compute Eigenvalues'%(e_time2 - s_time2))
-
-estimates = []
-multiplier = eig_vals[-2]
-for i in range(1, t):
-    estimate = multiplier/(float(i)**(1.0 + 1.0/float(d)))
-    estimates.append(estimate)
-estimates = np.array(estimates)
-
-plt.plot(range(1, t), np.log10(eig_vals[::-1][1:]), color='red')
-plt.plot(range(1, t), np.log10(estimates), color='blue')
-plt.ylabel('Eigenvalue')
-plt.xlabel('k')
-plt.show()
+for d in ds:
+    for coeff in coeffs:
+        np.random.seed(1)
+        Xs = sample_ball(d, t)
+        print('d: %s, coeff: %s'%(d, coeff))
+        print('Assembling Kernel Matrix')
+        s_time = time.time()
+        Sigma = compute_covariance_matrix_massive(Xs.T, 50,  coeff)
+        e_time = time.time()
+        print('Took %s Seconds to Assemble Matrix'%(e_time - s_time))
+        print('Computing Eigenvalues')
+        s_time2 = time.time()
+        eig_vals = np.linalg.eigvalsh(Sigma/float(t))
+        e_time2 = time.time()
+        filename = 'eig_vals_d%s_t%s_c%s.pkl'%(d, t, coeff)
+        eigvals_filename = root / "pickle" / filename
+        with open(eigvals_filename, 'wb') as handle:
+            pickle.dump(eig_vals, handle)
+        print('Took %s Seconds to Compute Eigenvalues'%(e_time2 - s_time2))
